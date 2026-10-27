@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Bold.ttf');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Semibold.ttf');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Thin.ttf');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Medium.ttf');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'BeatriceDeckTrial';
+    src: url('/fonts/BeatriceDeckTRIAL-Light.ttf');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@theme {
+    --font-beatrice: 'BeatriceDeckTrial', sans-serif;
+
+    --color-primary-bg-color: #ffffff;
+    --color-secondary-bg-color: #d7d7d7;
+    --color-tertiary-bg-color: #a3a3a3;
+    --color-primary-text-color: #000000;
+    --color-secondary-text-color: #1e1e1e;
+}

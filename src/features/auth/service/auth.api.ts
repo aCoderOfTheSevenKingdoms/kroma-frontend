@@ -12,7 +12,18 @@ type RegisterPayload = {
     fullname: string;
 }
 
+type LoginPayload = {
+    email: string;
+    password: string;
+}
+
 export async function register(registerPayload: RegisterPayload) {
    const response = await authApiInstance.post("/register", registerPayload);
    return response.data;
 }
+
+export async function login(loginPayload: LoginPayload) {
+   const response = await authApiInstance.post("/login", loginPayload);
+   return response.data;
+}
+
