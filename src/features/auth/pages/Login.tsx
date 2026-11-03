@@ -1,10 +1,11 @@
-import React from 'react'
+import React from 'react';
+import {LoginCard} from "../components/LoginCard";
 
 const Login = () => {
   return (
-    <div>
-      Login page 
-    </div>
+    <main className='h-screen w-full flex justify-center items-center'>
+      <LoginCard/>
+    </main>
   )
 }
 
