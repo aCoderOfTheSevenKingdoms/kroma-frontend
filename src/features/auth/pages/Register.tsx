@@ -1,9 +1,9 @@
-import React from 'react'
+import { AuthCard } from "../components/AuthCard"
 
 const Register = () => {
   return (
-    <div>
-      Registration page 
+    <div className='h-screen w-full flex justify-center items-center'>
+      <AuthCard isLogin={false}/>
     </div>
   )
 }

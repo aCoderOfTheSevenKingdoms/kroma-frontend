@@ -4,7 +4,12 @@ import { Navigate } from "react-router";
 import type { RootState } from "../app.store";
 
 const Public = ({children}: {children: ReactNode}): ReactNode => {
-    const user = useSelector((state: RootState) => state.auth.user);
+    const {user, initialized} = useSelector((state: RootState) => state.auth);
+
+    if (!initialized) {
+        return null;
+    }
+
     if(user) {
         return <Navigate to="/home" replace></Navigate>
     }

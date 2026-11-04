@@ -1,10 +1,9 @@
-import React from 'react';
-import {LoginCard} from "../components/LoginCard";
+import {AuthCard} from "../components/AuthCard";
 
 const Login = () => {
   return (
     <main className='h-screen w-full flex justify-center items-center'>
-      <LoginCard/>
+      <AuthCard isLogin={true}/>
     </main>
   )
 }

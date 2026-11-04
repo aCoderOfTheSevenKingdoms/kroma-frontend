@@ -5,7 +5,11 @@ import type { RootState } from '../app.store';
 
 const Protected = ({children}: {children: ReactNode}): ReactNode => {
 
-  const user = useSelector((state: RootState) => state.auth.user);   
+  const {user, initialized} = useSelector((state: RootState) => state.auth);
+
+  if (!initialized) {
+    return null;
+  }
 
   if(!user) {
     return <Navigate to="/login" replace></Navigate>
