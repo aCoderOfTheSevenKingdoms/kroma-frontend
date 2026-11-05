@@ -21,6 +21,10 @@ export async function login(loginPayload: LoginPayload): Promise<AuthResponse> {
    return response.data;
 }
 
+export async function logout(): Promise<void> {
+   await authApiInstance.post("/logout");
+}
+
 export async function getCurrentUser(): Promise<CurrentUserResponse> {
    const response = await authApiInstance.get<CurrentUserResponse>("/me");
    return response.data;

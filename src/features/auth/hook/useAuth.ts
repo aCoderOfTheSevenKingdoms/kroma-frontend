@@ -6,6 +6,7 @@ import {
     getCurrentUser,
     login,
     loginWithGoogle,
+    logout,
     register,
 } from "../service/auth.api";
 import type {
@@ -75,10 +76,30 @@ export const useAuth = () => {
         loginWithGoogle();
     }, []);
 
+    const handleLogout = useCallback(async (): Promise<AuthActionResult> => {
+        dispatch(setLoading(true));
+        dispatch(setError(null));
+
+        try {
+            await logout();
+            dispatch(setUser(null));
+            toast.success("Signed out successfully");
+            return {success: true, message: "Logged out successfully"};
+        } catch (error) {
+            const message = getApiErrorMessage(error);
+            toast.error("Logout failed", message);
+            dispatch(setError(message));
+            return {success: false, message};
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }, [dispatch]);
+
     return {
         handleRegister,
         handleLogin,
         handleGoogleLogin,
+        handleLogout,
         bootstrap,
     }
 }

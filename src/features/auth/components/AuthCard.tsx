@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { RootState } from "@/app/app.store"
 import type { UserType } from "../auth.types"
 import { useAuth } from "../hook/useAuth"
+import {GoogleIcon} from "../components/GoogleIcon"
 
 export function AuthCard({isLogin}: {isLogin: boolean}) {
   const [showPassword, setShowPassword] = useState(false)
@@ -163,7 +164,7 @@ export function AuthCard({isLogin}: {isLogin: boolean}) {
                 </Button>
               </div>
             </div>
-            {error && (
+            {/* {error && (
               <p role="alert" className="text-sm text-destructive">
                 {error}
               </p>
@@ -172,7 +173,7 @@ export function AuthCard({isLogin}: {isLogin: boolean}) {
               <p role="status" className="text-sm text-secondary-text-color">
                 {successMessage}
               </p>
-            )}
+            )} */}
           </div>
         </form>
       </CardContent>
@@ -188,10 +189,11 @@ export function AuthCard({isLogin}: {isLogin: boolean}) {
         <Button
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-full flex items-center"
           onClick={handleGoogleLogin}
           disabled={loading}
         >
+          <GoogleIcon className="h-4 w-4" />
           Continue with Google
         </Button>
       </CardFooter>
