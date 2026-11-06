@@ -1,17 +1,17 @@
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { useSidebar } from "@/components/ui/sidebar"
 import { HamburgerIcon } from "./HamburgerIcon"
 import { navLinks } from "./nav-links"
+import { Button } from "@/components/ui/button"
 
 export const Navbar = () => {
   const { toggleSidebar } = useSidebar()
+  const navigate = useNavigate();
 
   return (
     <header className="relative flex w-full items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center">
@@ -33,12 +33,14 @@ export const Navbar = () => {
         <NavigationMenuList className="justify-start">
           {navLinks.map((item) => (
             <NavigationMenuItem key={item.href}>
-              <NavigationMenuLink
-                className={navigationMenuTriggerStyle()}
-                render={<Link to={item.href} />}
+              <Button
+                type="button"
+                variant={"link"}
+                className={`cursor-pointer`}
+                onClick={() => navigate(item.href)}
               >
                 {item.title}
-              </NavigationMenuLink>
+              </Button>
             </NavigationMenuItem>
           ))}
         </NavigationMenuList>

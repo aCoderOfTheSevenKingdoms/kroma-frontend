@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { navLinks } from "./nav-links"
 
-export const HomeSidebar = () => {
+export const AppSidebar = () => {
   const { setOpenMobile } = useSidebar()
   const location = useLocation()
 
