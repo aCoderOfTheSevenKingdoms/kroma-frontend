@@ -5,6 +5,8 @@ import AppLayout from "./layouts/AppLayout";
 import Home from "../features/home/pages/Home";
 import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
+import CreateEditProduct from "../features/products/pages/CreateEditProduct";
+import EditProductRoute from "../features/products/pages/EditProductRoute";
 
 export const routes = createBrowserRouter([
     {
@@ -19,6 +21,14 @@ export const routes = createBrowserRouter([
             {
                 path: "/home",
                 element: <Home/>
+            },
+            {
+                path: "/product/create",
+                element: <CreateEditProduct/>
+            },
+            {
+                path: "/product/edit/:slug",
+                element: <EditProductRoute/>
             }
         ]
     },

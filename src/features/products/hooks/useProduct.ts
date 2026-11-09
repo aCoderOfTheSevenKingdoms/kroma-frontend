@@ -5,7 +5,7 @@ import { useToast } from "@/features/toast/hook/useToast";
 import { getApiErrorMessage } from "@/features/auth/service/auth.api";
 import { createProduct, getProductsForSeller } from "../services/product.api";
 import { setError, setLoading, setSellerProducts } from "../state/product.slice";
-import type { CreateProductPayload } from "../product.types";
+import type { CreateProductPayload, Product } from "../product.types";
 
 export type ProductActionResult = {
     success: boolean;
@@ -41,7 +41,11 @@ export const useProduct = () => {
 
         try {
             const data = await getProductsForSeller();
-            dispatch(setSellerProducts(data.products));
+            const productsBySlug = data.products.reduce<Record<string, Product>>((map, product) => {
+                map[product.slug] = product;
+                return map;
+            }, {});
+            dispatch(setSellerProducts(productsBySlug));
             return {success: true, message: data.message};
         } catch (err) {
             const message = getApiErrorMessage(err);

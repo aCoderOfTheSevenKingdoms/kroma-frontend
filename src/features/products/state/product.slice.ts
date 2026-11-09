@@ -2,13 +2,13 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product } from "../product.types";
 
 type ProductState = {
-    sellerProducts: Product[];
+    sellerProducts: Record<string, Product>;
     loading: boolean;
     error: boolean;
 }
 
 const initialState: ProductState = {
-    sellerProducts: [],
+    sellerProducts: {},
     loading: false,
     error: false
 }
@@ -17,7 +17,7 @@ const productSlice = createSlice({
     name: "product",
     initialState,
     reducers: {
-        setSellerProducts: (state, action: PayloadAction<Product[]>) => {
+        setSellerProducts: (state, action: PayloadAction<Record<string, Product>>) => {
             state.sellerProducts = action.payload;
         },
         setLoading: (state, action: PayloadAction<boolean>) => {
