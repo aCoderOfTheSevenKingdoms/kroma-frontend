@@ -20,6 +20,12 @@ const productSlice = createSlice({
         setSellerProducts: (state, action: PayloadAction<Record<string, Product>>) => {
             state.sellerProducts = action.payload;
         },
+        upsertProduct: (state, action: PayloadAction<Product>) => {
+            state.sellerProducts[action.payload.slug] = action.payload;
+        },
+        removeProduct: (state, action: PayloadAction<string>) => {
+            delete state.sellerProducts[action.payload];
+        },
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
@@ -29,5 +35,5 @@ const productSlice = createSlice({
     }
 })
 
-export const { setSellerProducts, setLoading, setError } = productSlice.actions;
+export const { setSellerProducts, upsertProduct, removeProduct, setLoading, setError } = productSlice.actions;
 export default productSlice.reducer;

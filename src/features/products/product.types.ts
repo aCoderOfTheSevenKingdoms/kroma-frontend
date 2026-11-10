@@ -1,3 +1,5 @@
+export type ProductCategory = "men" | "women";
+
 export type ProductVariant = {
     _id?: string;
     sku: string;
@@ -14,7 +16,7 @@ export type Product = {
     slug: string;
     description: string;
     seller: string;
-    category: string;
+    category: ProductCategory;
     basePrice: number;
     attributes: Record<string, string>;
     variants: ProductVariant[];
@@ -36,9 +38,8 @@ export type CreateProductVariantPayload = {
 
 export type CreateProductPayload = {
     title: string;
-    slug?: string;
     description: string;
-    category: string;
+    category: ProductCategory;
     basePrice: number;
     attributes?: Record<string, string>;
     variants: CreateProductVariantPayload[];
@@ -46,10 +47,14 @@ export type CreateProductPayload = {
     images?: File[];
 };
 
+export type UpdateProductPayload = CreateProductPayload;
+
 export type CreateProductResponse = {
     message: string;
     product: Product;
 };
+
+export type UpdateProductResponse = CreateProductResponse;
 
 export type GetProductsResponse = {
     message: string;

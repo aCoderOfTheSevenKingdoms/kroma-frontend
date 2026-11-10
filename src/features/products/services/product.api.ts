@@ -3,6 +3,8 @@ import type {
     CreateProductPayload,
     CreateProductResponse,
     GetProductsResponse,
+    UpdateProductPayload,
+    UpdateProductResponse,
 } from '../product.types';
 
 const productApiInstance = axios.create({
@@ -10,17 +12,12 @@ const productApiInstance = axios.create({
     withCredentials: true
 });
 
-export async function createProduct(
+function buildProductFormData(
     createProductPayload: CreateProductPayload
-): Promise<CreateProductResponse> {
+): FormData {
     const formData = new FormData();
 
     formData.append("title", createProductPayload.title);
-
-    if (createProductPayload.slug?.trim()) {
-        formData.append("slug", createProductPayload.slug);
-    }
-
     formData.append("description", createProductPayload.description);
     formData.append("category", createProductPayload.category);
     formData.append("basePrice", String(createProductPayload.basePrice));
@@ -35,9 +32,26 @@ export async function createProduct(
         formData.append("images", image);
     });
 
+    return formData;
+}
+
+export async function createProduct(
+    createProductPayload: CreateProductPayload
+): Promise<CreateProductResponse> {
     const response = await productApiInstance.post<CreateProductResponse>(
         "/create-product",
-        formData
+        buildProductFormData(createProductPayload)
+    );
+    return response.data;
+}
+
+export async function updateProduct(
+    slug: string,
+    updateProductPayload: UpdateProductPayload
+): Promise<UpdateProductResponse> {
+    const response = await productApiInstance.put<UpdateProductResponse>(
+        `/${encodeURIComponent(slug)}`,
+        buildProductFormData(updateProductPayload)
     );
     return response.data;
 }

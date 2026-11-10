@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/app/app.store";
 import { useToast } from "@/features/toast/hook/useToast";
 import { getApiErrorMessage } from "@/features/auth/service/auth.api";
-import { createProduct, getProductsForSeller } from "../services/product.api";
-import { setError, setLoading, setSellerProducts } from "../state/product.slice";
-import type { CreateProductPayload, Product } from "../product.types";
+import { createProduct, getProductsForSeller, updateProduct } from "../services/product.api";
+import { removeProduct, setError, setLoading, setSellerProducts, upsertProduct } from "../state/product.slice";
+import type { CreateProductPayload, Product, UpdateProductPayload } from "../product.types";
 
 export type ProductActionResult = {
     success: boolean;
@@ -23,6 +23,7 @@ export const useProduct = () => {
 
         try {
             const data = await createProduct(createProductPayload);
+            dispatch(upsertProduct(data.product));
             toast.success("Product created", data.message);
             return {success: true, message: data.message};
         } catch (err) {
@@ -33,7 +34,29 @@ export const useProduct = () => {
         } finally {
             dispatch(setLoading(false));
         }
-    }, [dispatch]);
+    }, [dispatch, toast]);
+
+    const handleUpdateProduct = useCallback(async (slug: string, updateProductPayload: UpdateProductPayload): Promise<ProductActionResult> => {
+        dispatch(setLoading(true));
+        dispatch(setError(false));
+
+        try {
+            const data = await updateProduct(slug, updateProductPayload);
+            if (slug !== data.product.slug) {
+                dispatch(removeProduct(slug));
+            }
+            dispatch(upsertProduct(data.product));
+            toast.success("Product updated", data.message);
+            return {success: true, message: data.message};
+        } catch (err) {
+            const message = getApiErrorMessage(err);
+            toast.error("Failed to update product", message);
+            dispatch(setError(true));
+            return {success: false, message};
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }, [dispatch, toast]);
 
     const handleGetSellerProducts = useCallback(async (): Promise<ProductActionResult> => {
         dispatch(setLoading(true));
@@ -55,13 +78,14 @@ export const useProduct = () => {
         } finally {
             dispatch(setLoading(false));
         }
-    }, [dispatch]);
+    }, [dispatch, toast]);
 
     return {
         sellerProducts,
         loading,
         error,
         handleCreateProduct,
+        handleUpdateProduct,
         handleGetSellerProducts,
     }
 }
