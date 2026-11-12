@@ -12,4 +12,8 @@ export const navLinks: NavLink[] = [
     title: "Collections",
     href: "/collections",
   },
+  {
+    title: "Products",
+    href: "/products/seller"
+  }
 ];

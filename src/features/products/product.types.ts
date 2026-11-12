@@ -49,12 +49,19 @@ export type CreateProductPayload = {
 
 export type UpdateProductPayload = CreateProductPayload;
 
+export type AddVariantPayload = {
+    variants: CreateProductVariantPayload[];
+    images?: File[];
+};
+
 export type CreateProductResponse = {
     message: string;
     product: Product;
 };
 
 export type UpdateProductResponse = CreateProductResponse;
+
+export type AddVariantResponse = CreateProductResponse;
 
 export type GetProductsResponse = {
     message: string;

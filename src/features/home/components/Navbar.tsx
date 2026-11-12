@@ -8,13 +8,15 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { HamburgerIcon } from "./HamburgerIcon"
 import { navLinks } from "./nav-links"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/features/auth/hook/useAuth"
 
 export const Navbar = () => {
   const { toggleSidebar } = useSidebar()
   const navigate = useNavigate();
+  const {handleLogout} = useAuth();
 
   return (
-    <header className="relative flex w-full items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center">
+    <header className="relative flex w-full items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-x-8">
       <div className="flex items-center gap-3 lg:hidden">
         <button
           type="button"
@@ -29,7 +31,7 @@ export const Navbar = () => {
         </Link>
       </div>
 
-      <NavigationMenu className="hidden lg:flex">
+      <NavigationMenu className="hidden lg:flex lg:justify-self-start">
         <NavigationMenuList className="justify-start">
           {navLinks.map((item) => (
             <NavigationMenuItem key={item.href}>
@@ -53,7 +55,13 @@ export const Navbar = () => {
         Kroma.
       </Link>
 
-      <div className="hidden lg:block" />
+      <Button
+        variant={`link`}
+        className={`hidden w-[5rem] lg:block lg:justify-self-end`}
+        onClick={handleLogout}
+      >
+        Logout 
+      </Button>
     </header>
   )
 }

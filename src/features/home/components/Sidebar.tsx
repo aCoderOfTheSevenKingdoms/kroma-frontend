@@ -3,6 +3,7 @@ import { XIcon } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -14,10 +15,12 @@ import {
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { navLinks } from "./nav-links"
+import { useAuth } from "@/features/auth/hook/useAuth"
 
 export const AppSidebar = () => {
   const { setOpenMobile } = useSidebar()
   const location = useLocation()
+  const {handleLogout} = useAuth();
 
   const closeSidebar = () => setOpenMobile(false)
 
@@ -62,6 +65,14 @@ export const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <Button 
+          className={`text-red-500 w-full bg-secondary-bg-color hover:bg-[#c4bebe]`}
+          onClick={handleLogout}
+        >
+          Logout 
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   )
 }

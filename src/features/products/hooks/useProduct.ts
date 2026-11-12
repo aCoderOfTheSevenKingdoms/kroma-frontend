@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/app/app.store";
 import { useToast } from "@/features/toast/hook/useToast";
 import { getApiErrorMessage } from "@/features/auth/service/auth.api";
-import { createProduct, getProductsForSeller, updateProduct } from "../services/product.api";
+import { createProduct, getProductsForSeller, addVariant, updateProduct } from "../services/product.api";
 import { removeProduct, setError, setLoading, setSellerProducts, upsertProduct } from "../state/product.slice";
-import type { CreateProductPayload, Product, UpdateProductPayload } from "../product.types";
+import type { AddVariantPayload, CreateProductPayload, Product, UpdateProductPayload } from "../product.types";
 
 export type ProductActionResult = {
     success: boolean;
@@ -58,6 +58,25 @@ export const useProduct = () => {
         }
     }, [dispatch, toast]);
 
+    const handleAddVariant = useCallback(async (slug: string, addVariantPayload: AddVariantPayload): Promise<ProductActionResult> => {
+        dispatch(setLoading(true));
+        dispatch(setError(false));
+
+        try {
+            const data = await addVariant(slug, addVariantPayload);
+            dispatch(upsertProduct(data.product));
+            toast.success("Variant added", data.message);
+            return {success: true, message: data.message};
+        } catch (err) {
+            const message = getApiErrorMessage(err);
+            toast.error("Failed to add variant", message);
+            dispatch(setError(true));
+            return {success: false, message};
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }, [dispatch, toast]);
+
     const handleGetSellerProducts = useCallback(async (): Promise<ProductActionResult> => {
         dispatch(setLoading(true));
         dispatch(setError(false));
@@ -86,6 +105,7 @@ export const useProduct = () => {
         error,
         handleCreateProduct,
         handleUpdateProduct,
+        handleAddVariant,
         handleGetSellerProducts,
     }
 }

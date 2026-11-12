@@ -10,12 +10,14 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import type { FileMetadata, FileWithPreview } from "@/hooks/use-file-upload";
+import { useToast } from "@/features/toast/hook/useToast";
 import { FileUploadDialog } from "../components/FileUploadDialog";
 import { useProduct } from "../hooks/useProduct";
-import type { CreateProductPayload, ProductCategory } from "../product.types";
+import type { AddVariantPayload, CreateProductPayload, ProductCategory } from "../product.types";
 
 type CreateEditProductProps = {
   slug?: string;
+  isAddVariant?: boolean;
 };
 
 const SIZES = ["S", "M", "L", "XL", "XXL"] as const;
@@ -33,7 +35,7 @@ type ProductFormState = {
   basePrice: string;
   sku: string;
   color: string;
-  size: Size;
+  size: Size | "";
   price: string;
   stock: string;
 };
@@ -42,15 +44,16 @@ function toSize(value?: string): Size {
   return SIZES.includes(value as Size) ? (value as Size) : "M";
 }
 
-const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
+const CreateEditProduct = ({ slug, isAddVariant = false }: CreateEditProductProps) => {
   const navigate = useNavigate();
-  const { handleCreateProduct, handleUpdateProduct, loading } = useProduct();
+  const toast = useToast();
+  const { handleCreateProduct, handleUpdateProduct, handleAddVariant, loading } = useProduct();
   const product = useSelector((state: RootState) =>
     slug ? state.product.sellerProducts[slug] : undefined
   );
 
-  const isEdit = Boolean(slug);
-  const variant = product?.variants?.[0];
+  const isEdit = Boolean(slug) && !isAddVariant;
+  const variant = isAddVariant ? undefined : product?.variants?.[0];
 
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [form, setForm] = useState<ProductFormState>({
@@ -60,18 +63,20 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
     basePrice: product?.basePrice !== undefined ? String(product.basePrice) : "",
     sku: variant?.sku ?? "",
     color: variant?.color ?? "",
-    size: toSize(variant?.size),
+    size: isAddVariant ? "" : toSize(variant?.size),
     price: variant?.price !== undefined ? String(variant.price) : "",
     stock: variant?.stock !== undefined ? String(variant.stock) : "",
   });
 
-  const initialImages: FileMetadata[] = (variant?.images ?? []).map((url, index) => ({
-    id: `existing-${index}`,
-    name: `image-${index + 1}`,
-    size: 0,
-    type: "image/*",
-    url,
-  }));
+  const initialImages: FileMetadata[] = isAddVariant
+    ? []
+    : (variant?.images ?? []).map((url, index) => ({
+        id: `existing-${index}`,
+        name: `image-${index + 1}`,
+        size: 0,
+        type: "image/*",
+        url,
+      }));
 
   function updateField<K extends keyof ProductFormState>(
     key: K,
@@ -81,7 +86,7 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
   }
 
   function goBack() {
-    navigate("/product");
+    navigate("/products/seller");
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -98,6 +103,35 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
       }
     });
 
+    if (isAddVariant && slug) {
+      if (!form.size) {
+        toast.error("Size required", "Select a size for the new variant.");
+        return;
+      }
+
+      const payload: AddVariantPayload = {
+        variants: [
+          {
+            sku: form.sku.trim(),
+            size: form.size,
+            color: form.color.trim(),
+            price: Number(form.price || form.basePrice),
+            stock: Number(form.stock || 0),
+            images: newFiles.map((_, index) => index),
+          },
+        ],
+        images: newFiles,
+      };
+
+      const result = await handleAddVariant(slug, payload);
+
+      if (result.success) {
+        navigate("/products/seller");
+      }
+
+      return;
+    }
+
     const basePrice = Number(form.basePrice);
 
     const payload: CreateProductPayload = {
@@ -109,7 +143,7 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
       variants: [
         {
           sku: form.sku.trim(),
-          size: form.size,
+          size: form.size || toSize(),
           color: form.color.trim(),
           price: Number(form.price || form.basePrice),
           stock: Number(form.stock || 0),
@@ -125,11 +159,11 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
       : await handleCreateProduct(payload);
 
     if (result.success) {
-      navigate("/product");
+      navigate("/products/seller");
     }
   }
 
-  if (isEdit && !product) {
+  if (slug && !product) {
     return (
       <div className="w-full max-w-4xl mx-auto p-4 sm:p-6">
         <div className="flex items-start gap-3">
@@ -168,12 +202,14 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
           </Button>
           <div>
             <h1 className="text-xl font-semibold lg:text-2xl">
-              {isEdit ? "Edit product" : "Create product"}
+              {isAddVariant ? "Add variant" : isEdit ? "Edit product" : "Create product"}
             </h1>
             <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
-              {isEdit
-                ? `Updating ${product?.title ?? "product"}`
-                : "Add a new product to your catalogue."}
+              {isAddVariant
+                ? `Adding a new variant to ${product?.title ?? "product"}`
+                : isEdit
+                  ? `Updating ${product?.title ?? "product"}`
+                  : "Add a new product to your catalogue."}
             </p>
           </div>
         </div>
@@ -343,7 +379,13 @@ const CreateEditProduct = ({ slug }: CreateEditProductProps) => {
             Cancel
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : isEdit ? "Update product" : "Create product"}
+            {loading
+              ? "Saving..."
+              : isAddVariant
+                ? "Add variant"
+                : isEdit
+                  ? "Update product"
+                  : "Create product"}
           </Button>
         </div>
       </form>

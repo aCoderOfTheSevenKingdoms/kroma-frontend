@@ -1,5 +1,7 @@
 import axios from 'axios';
 import type {
+    AddVariantPayload,
+    AddVariantResponse,
     CreateProductPayload,
     CreateProductResponse,
     GetProductsResponse,
@@ -35,6 +37,20 @@ function buildProductFormData(
     return formData;
 }
 
+function buildAddVariantFormData(
+    addVariantPayload: AddVariantPayload
+): FormData {
+    const formData = new FormData();
+
+    formData.append("variants", JSON.stringify(addVariantPayload.variants));
+
+    addVariantPayload.images?.forEach((image) => {
+        formData.append("images", image);
+    });
+
+    return formData;
+}
+
 export async function createProduct(
     createProductPayload: CreateProductPayload
 ): Promise<CreateProductResponse> {
@@ -52,6 +68,17 @@ export async function updateProduct(
     const response = await productApiInstance.put<UpdateProductResponse>(
         `/${encodeURIComponent(slug)}`,
         buildProductFormData(updateProductPayload)
+    );
+    return response.data;
+}
+
+export async function addVariant(
+    slug: string,
+    addVariantPayload: AddVariantPayload
+): Promise<AddVariantResponse> {
+    const response = await productApiInstance.patch<AddVariantResponse>(
+        `/${encodeURIComponent(slug)}`,
+        buildAddVariantFormData(addVariantPayload)
     );
     return response.data;
 }
