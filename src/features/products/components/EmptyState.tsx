@@ -1,5 +1,4 @@
 import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRightIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -10,25 +9,29 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { useNavigate } from "react-router";
 
-export function EmptyState() {
+export function EmptyState({redirectPath, title, description}: {redirectPath: string; title: string; description: string}) {
+  const navigate = useNavigate();
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <IconFolderCode />
         </EmptyMedia>
-        <EmptyTitle>No Projects Yet</EmptyTitle>
-        <EmptyDescription>
-          You haven&apos;t created any projects yet. Get started by creating
-          your first project.
+        <EmptyTitle className={`text-md`}>{title}</EmptyTitle>
+        <EmptyDescription className={`text-xs`}>
+          {description}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent className="flex-row justify-center gap-2">
-        <Button>Create Project</Button>
-        <Button variant="outline">Import Project</Button>
+        <Button 
+          className={`size-fit py-2 px-4 text-xs cursor-pointer`}
+          onClick={() => {navigate(redirectPath)}}
+        >
+          Create Project
+        </Button>
       </EmptyContent>
-      <Button variant="link" className="text-muted-foreground" size="sm" nativeButton={false} render={<a href="#">Learn More <ArrowUpRightIcon /></a>} />
     </Empty>
   )
 }
