@@ -4,6 +4,7 @@ import type {
     AddVariantResponse,
     CreateProductPayload,
     CreateProductResponse,
+    GetAllProductsResponse,
     GetProductsResponse,
     UpdateProductPayload,
     UpdateProductResponse,
@@ -85,5 +86,10 @@ export async function addVariant(
 
 export async function getProductsForSeller(): Promise<GetProductsResponse> {
     const response = await productApiInstance.get<GetProductsResponse>("/seller");
+    return response.data;
+}
+
+export async function getAllProducts(): Promise<GetAllProductsResponse> {
+    const response = await productApiInstance.get<GetAllProductsResponse>("/");
     return response.data;
 }

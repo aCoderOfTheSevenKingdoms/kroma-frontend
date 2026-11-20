@@ -15,12 +15,6 @@ const SellerProducts = () => {
         handleGetSellerProducts();
     }, [handleGetSellerProducts])
 
-    // if(products.length === 0) {
-    //   return (
-    //     <EmptyState/>
-    //   )
-    // }
-
   return (
     <div className="w-full max-w-6xl mx-auto p-4 sm:p-6">
       <div>

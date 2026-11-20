@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/app/app.store";
 import { useToast } from "@/features/toast/hook/useToast";
 import { getApiErrorMessage } from "@/features/auth/service/auth.api";
-import { createProduct, getProductsForSeller, addVariant, updateProduct } from "../services/product.api";
-import { removeProduct, setError, setLoading, setSellerProducts, upsertProduct } from "../state/product.slice";
+import { createProduct, getProductsForSeller, addVariant, updateProduct, getAllProducts } from "../services/product.api";
+import { removeProduct, setError, setLoading, setProducts, setSellerProducts, upsertProduct } from "../state/product.slice";
 import type { AddVariantPayload, CreateProductPayload, Product, UpdateProductPayload } from "../product.types";
 
 export type ProductActionResult = {
@@ -99,6 +99,24 @@ export const useProduct = () => {
         }
     }, [dispatch, toast]);
 
+    const handleGetAllProducts = useCallback(async (): Promise<ProductActionResult> => {
+        dispatch(setLoading(true));
+        dispatch(setError(false));
+
+        try {
+            const data = await getAllProducts();
+            dispatch(setProducts(data.products));
+            return {success: true, message: data.message};
+        } catch (err) {
+            const message = getApiErrorMessage(err);
+            toast.error("Failed to fetch products", message);
+            dispatch(setError(true));
+            return {success: false, message};
+        } finally {
+            dispatch(setLoading(false));
+        }
+    }, [dispatch, toast])
+
     return {
         sellerProducts,
         loading,
@@ -107,5 +125,6 @@ export const useProduct = () => {
         handleUpdateProduct,
         handleAddVariant,
         handleGetSellerProducts,
+        handleGetAllProducts
     }
 }

@@ -11,8 +11,23 @@ import EditProductRoute from "../features/products/pages/EditProductRoute";
 import AddVariantRoute from "../features/products/pages/AddVariantRoute";
 import SellerProtected from "./routes/SellerProtected";
 import SellerProducts from "@/features/products/pages/SellerProducts";
+import Products from "@/features/products/pages/Products";
+import ProductSlug from "@/features/products/pages/ProductSlug";
 
 export const routes = createBrowserRouter([
+    {
+        element: <AppLayout />,
+        children: [
+            {
+                path: "/products",
+                element: <Products />
+            },
+            {
+                path: "/products/:slug",
+                element: <ProductSlug />
+            }
+        ]
+    },
     {
         element: <Protected>
             <AppLayout />

@@ -23,15 +23,13 @@ import {GoogleIcon} from "../components/GoogleIcon"
 export function AuthCard({isLogin}: {isLogin: boolean}) {
   const [showPassword, setShowPassword] = useState(false)
   const [userType, setUserType] = useState<UserType>("buyer")
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const { handleLogin, handleRegister, handleGoogleLogin } = useAuth()
-  const { loading, error } = useSelector((state: RootState) => state.auth)
+  const { loading } = useSelector((state: RootState) => state.auth)
   const navigate = useNavigate()
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSuccessMessage(null)
 
     const form = event.currentTarget
     const formData = new FormData(form)
@@ -58,7 +56,6 @@ export function AuthCard({isLogin}: {isLogin: boolean}) {
     })
 
     if (result.success) {
-      setSuccessMessage("Account created. Check your email to verify your account.")
       form.reset()
     }
   }

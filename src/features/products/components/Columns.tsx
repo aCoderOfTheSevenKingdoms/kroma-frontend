@@ -7,35 +7,6 @@ import {ArrowUpDown} from "lucide-react";
 
 const columnHelper = createColumnHelper<DataTableFeatures, Product>();
 
-// Root cause: TanStack Table doesn't resolve dot paths in accessor("variants.sku"). It looks up a literal property named "variants.sku" on the row object, which doesn't exist, so the cell value is undefined and renders blank. No error is thrown because the column simply has no value.
-// Since variants is an array, one row can have multiple SKUs, so you don't want a plain scalar accessor anyway. Use a display column (same pattern as your actions column at line 53) and render the array yourself.
-
-// Fix — replace Columns.tsx:14-16
-// columnHelper.display({
-//     id: "variants",
-//     header: "Variants",
-//     cell: ({ row }) => (
-//         <div className="flex max-w-56 flex-wrap gap-1">
-//             {row.original.variants.map((variant) => (
-//                 <span
-//                     key={variant._id ?? variant.sku}
-//                     className="rounded bg-muted px-2 py-0.5 font-mono text-xs"
-//                 >
-//                     {variant.sku}
-//                 </span>
-//             ))}
-//         </div>
-//     )
-// }),
-// Notes:
-// - display columns aren't sortable/filterable, which is fine here (you only sort basePrice and filter title). If you later need SKU sorting/filtering, use accessorFn: (row) => row.variants.map(v => v.sku).join(", ") with id: "variants" and still render the badges from row.original.variants.
-// - key={variant._id ?? variant.sku} avoids duplicate-key warnings; SKUs are unique per product now, so this is safe.
-// - If you want a fallback for products with no variants, render "—" when row.original.variants.length === 0.
-// Verification
-// - Run the frontend typecheck/build; the accessor("variants.sku") type error (if any) goes away with display.
-// - Open /seller/products and confirm each row shows one badge per variant SKU.
-// Want me to apply this edit?
-
 export const Columns = columnHelper.columns([
     columnHelper.accessor("title", {
         header: "Product"

@@ -68,3 +68,10 @@ export type GetProductsResponse = {
     success: boolean;
     products: Product[];
 };
+
+export type GetAllProductsResponse = {
+    message?: string;
+    messages?: string;
+    success: boolean;
+    products: Product[];
+};
